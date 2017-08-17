@@ -1,8 +1,12 @@
-﻿Versão 1.0.2:
-Fix na leitura de imagens através de addons de video
+﻿2.0.0:
+Add-on completely rewritten
+Multiple improvements and fixes
 
-Versão 1.0.1:
-Adicionada leitura de CBR/CBZ (Sem opção de download)
+1.0.2:
+Bug fixing for reading through video add-ons
 
-Versão 1.0.0:
-Primeira versão
+1.0.1:
+Added CBR/CBZ reader
+
+1.0.0:
+Initial Release

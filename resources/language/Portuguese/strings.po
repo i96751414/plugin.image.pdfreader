@@ -1,0 +1,206 @@
+# Kodi Media Center language file
+# Addon Name: PDF Reader
+# Addon id: plugin.image.pdfreader
+# Addon Provider: i96751414
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-06 12:03+0100\n"
+"PO-Revision-Date: 2017-08-06 12:07+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.12\n"
+
+msgctxt "#30000"
+msgid "Open PDF"
+msgstr "Abrir PDF"
+""
+
+msgctxt "#30001"
+msgid "Add-on settings"
+msgstr "Definições do Add-on"
+""
+
+msgctxt "#30002"
+msgid "Error!"
+msgstr "Erro!"
+""
+
+msgctxt "#30003"
+msgid "Please select a PDF file."
+msgstr "Por favor seleccione um ficheiro PDF."
+""
+
+msgctxt "#30004"
+msgid "Last version installed"
+msgstr "Última versão instalada"
+""
+
+msgctxt "#30005"
+msgid "Error verifying version!"
+msgstr "Erro ao verificar a versão!"
+""
+
+msgctxt "#30006"
+msgid "New version available"
+msgstr "Versão nova disponível"
+""
+
+msgctxt "#30007"
+msgid "Please update!"
+msgstr "Por favor actualize!"
+""
+
+msgctxt "#30008"
+msgid "Open CBR or CBZ"
+msgstr "Abrir CBR ou CBZ"
+""
+
+msgctxt "#30009"
+msgid "Please select a CBR or CBZ file."
+msgstr "Por favor seleccione um ficheiro CBR ou CBZ."
+""
+
+msgctxt "#30010"
+msgid "PDF Reader"
+msgstr "PDF Reader"
+""
+
+msgctxt "#30011"
+msgid "Welcome to PDF Reader!"
+msgstr "Bem vindo ao PDF Reader!"
+""
+
+msgctxt "#30012"
+msgid "Be aware that this add-on was developed to read,"
+msgstr "Tenha em conta que este addon foi desenvolvido para ler,"
+""
+
+msgctxt "#30013"
+msgid "mostly, comic books."
+msgstr "essencialmente, "comicbooks"."
+""
+
+msgctxt "#30014"
+msgid "Please, visit the add-on settings."
+msgstr "Por favor, visite as configurações do add-on."
+""
+
+msgctxt "#30015"
+msgid "Error!"
+msgstr "Erro!"
+""
+
+msgctxt "#30016"
+msgid "Unable to open PDF."
+msgstr "Impossível abrir PDF."
+""
+
+msgctxt "#30017"
+msgid "Page"
+msgstr "Página"
+""
+
+msgctxt "#30018"
+msgid "Please set the PDF's folder."
+msgstr "Por favor defina a pasta dos PDF's."
+""
+
+msgctxt "#30019"
+msgid "There's already a file with the same name."
+msgstr "Já existe um ficheiro com o mesmo nome."
+""
+
+msgctxt "#30020"
+msgid "Estimated time"
+msgstr "Tempo estimado"
+""
+
+msgctxt "#30021"
+msgid "of"
+msgstr "de"
+""
+
+msgctxt "#30022"
+msgid "Save PDF's"
+msgstr "Guardar PDF's"
+""
+
+msgctxt "#30023"
+msgid "PDF's folder"
+msgstr "Pasta dos PDF's"
+""
+
+msgctxt "#30024"
+msgid "Initial message"
+msgstr "Mensagem Inicial"
+""
+
+msgctxt "#30025"
+msgid "Show real thumbnails"
+msgstr "Ver thumbnails reais"
+""
+
+msgctxt "#30026"
+msgid "Update thumbnails by PDF's name"
+msgstr "Actualizar thumbnails pelo nome do PDF"
+""
+
+msgctxt "#30027"
+msgid "Always update thumbnails"
+msgstr "Actualizar sempre thumbnails"
+""
+
+msgctxt "#30028"
+msgid "Download"
+msgstr "Download"
+""
+
+msgctxt "#30029"
+msgid "Thumbnails"
+msgstr "Thumbnails"
+""
+
+msgctxt "#30030"
+msgid "Global settings"
+msgstr "Definições globais"
+""
+
+msgctxt "#30031"
+msgid "Show only files larger than 10KB"
+msgstr "Mostrar apenas ficheiros maiores que 10KB"
+""
+
+msgctxt "#30032"
+msgid "Insert file or URL"
+msgstr "Inserir ficheiro ou URL"
+
+msgctxt "#30033"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "#30034"
+msgid "File"
+msgstr "Ficheiro"
+
+msgctxt "#30035"
+msgid "Insert URL"
+msgstr "Inserir URL"
+
+msgctxt "#30036"
+msgid "File path"
+msgstr "Caminho do ficheiro"
+
+msgctxt "#30037"
+msgid "OK"
+msgstr "OK"
+
+msgctxt "#30038"
+msgid "Unable to read PDF file..."
+msgstr "Não é possível ler o ficheiro PDF..."
