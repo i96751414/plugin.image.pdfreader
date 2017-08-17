@@ -61,8 +61,8 @@ def open_pdf():
 
 def run():
     params = sys.argv[0].split("/")[3:]
-    for i in range(len(params)):
-        params[i] = urllib.unquote_plus(params[i])
+    for index, param in enumerate(params):
+        params[index] = urllib.unquote_plus(param)
 
     if len(params) > 1 and params[0] == "play_images":
         data = json.loads(params[1])

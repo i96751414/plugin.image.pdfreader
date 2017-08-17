@@ -264,7 +264,14 @@ class CBXReader(PDFReader):
     def __init__(self):
         PDFReader.__init__(self)
 
-    def read(self, path, ext=".cbr"):
+    def read(self, path):
+        if path.lower().endswith(".cbr"):
+            ext = ".cbr"
+        elif path.lower().endswith(".cbz"):
+            ext = ".cbz"
+        else:
+            return False
+
         if os.path.isfile(path) and path.endswith(ext):
             self.file_path = path
         elif path.startswith("http"):
