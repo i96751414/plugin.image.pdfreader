@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
-
 import os
-import utils
+
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+
+from lib import utils
 
 THUMBNAILS_FOLDER = os.path.join(utils.DATA_PATH, "thumbnails")
 if not os.path.exists(THUMBNAILS_FOLDER):
@@ -27,7 +27,7 @@ def generate_thumbnail(text, image_width, image_height, font_resource_file, font
     font_color = check_color(font_color)
 
     # Convert the text into unicode
-    text = unicode(text, "utf-8")
+    text = str(text, "utf-8")
 
     # Create character image:
     char_image = Image.new("L", (image_width, image_height), background_color)

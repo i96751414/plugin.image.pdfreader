@@ -1,25 +1,30 @@
-# -*- coding: UTF-8 -*-
-
+import base64
+import json
 import os
 import sys
-import json
-import xbmc
 import zlib
-import utils
-import base64
-import urllib
+
+try:
+    from urllib import unquote_plus
+except ImportError:
+    from urllib.parse import unquote_plus
+
+import xbmc
 import xbmcgui
-import thumbnails
 import xbmcplugin
-from pdflib import pdf
-from dialog_insert import DialogInsert
+
+from lib import thumbnails
+from lib import utils
+from lib.dialog_insert import DialogInsert
+from lib.pdflib import pdf
 
 
 def add_page(name, path, thumbnail):
-    list_item = xbmcgui.ListItem(name, iconImage="DefaultImage.png", thumbnailImage=thumbnail)
+    list_item = xbmcgui.ListItem(name)
+    list_item.setArt({"thumb": thumbnail, "icon": "DefaultImage.png"})
     list_item.setProperty("fanart_image", os.path.join(utils.IMG_FOLDER, "black-background.jpg"))
     list_item.setInfo(type="image", infoLabels={"Title": name})
-    return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=path, listitem=list_item)
+    return xbmcplugin.addDirectoryItem(int(sys.argv[1]), path, list_item)
 
 
 def play_images(data):
@@ -36,7 +41,8 @@ def play_images(data):
 
 
 def add_dir(label, url, thumbnail=None, folder=False, total=1):
-    list_item = xbmcgui.ListItem(label, iconImage="DefaultFolder.png", thumbnailImage=thumbnail)
+    list_item = xbmcgui.ListItem(label)
+    list_item.setArt({"thumb": thumbnail, "icon": "DefaultFolder.png"})
     list_item.setProperty('fanart_image', os.path.join(utils.IMG_FOLDER, "black-background.jpg"))
     return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=list_item, isFolder=folder,
                                        totalItems=total)
@@ -55,14 +61,14 @@ def default():
 def open_pdf():
     w = DialogInsert("plugin.image.pdfreader-dialog-insert.xml", utils.ADDON_PATH)
     w.doModal()
-    if w.type != 0 and w.ret_val:
-        pdf.play_pdf(w.ret_val)
+    if w.type != DialogInsert.TYPE_UNKNOWN and w.ret_val:
+        pdf.play_pdf(w.ret_val, is_image_plugin=True)
 
 
 def run():
     params = sys.argv[0].split("/")[3:]
     for index, param in enumerate(params):
-        params[index] = urllib.unquote_plus(param)
+        params[index] = unquote_plus(param)
 
     if len(params) > 1 and params[0] == "play_images":
         data = json.loads(params[1])
@@ -77,4 +83,4 @@ def run():
     else:
         default()
 
-    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True, updateListing=False, cacheToDisc=True)
+    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), cacheToDisc=True)

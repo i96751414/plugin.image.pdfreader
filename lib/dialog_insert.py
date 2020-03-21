@@ -1,84 +1,84 @@
-# -*- coding: UTF-8 -*-
+from xbmcgui import Dialog, WindowXMLDialog, ACTION_PARENT_DIR, ACTION_NAV_BACK, ACTION_PREVIOUS_MENU
 
-import os
-import utils
-import xbmcgui
-from dialog import *
+from lib.utils import str_to_unicode, ADDON_NAME, translate
 
 
-class DialogInsert(xbmcgui.WindowXMLDialog):
-    def __init__(self, xml_filename, script_path):
-        xbmcgui.WindowXML.__init__(self, xml_filename, script_path)
-        self.ret_val = ""
-        self.type = 0
+# noinspection PyUnresolvedReferences
+class DialogInsert(WindowXMLDialog):
+    TYPE_UNKNOWN = 0
+    TYPE_URL = 1
+    TYPE_PATH = 2
+
+    def __init__(self, *args, **kwargs):
+        super(DialogInsert, self).__init__(*args, **kwargs)
+        self._ret_val = {self.TYPE_URL: "", self.TYPE_PATH: ""}
+        self._type = self.TYPE_UNKNOWN
         # Control IDs
-        self.close_button_id = 32500
-        self.radio_button_1_id = 32501
-        self.radio_button_2_id = 32502
-        self.ok_button_id = 32508
-        self.url_button_id = 32505
-        self.path_button_id = 32507
+        self._close_button_id = 32500
+        self._radio_button_1_id = 32501
+        self._radio_button_2_id = 32502
+        self._label_id = 32504
+        self._input_button_id = 32505
+        self._ok_button_id = 32506
 
     def onInit(self):
-        self.set_option_1()
+        self._set_type(self.TYPE_URL)
 
     def onClick(self, control_id):
-        if control_id == self.close_button_id:
-            self.cancelled()
-        elif control_id == self.radio_button_1_id:
-            self.set_option_1()
-        elif control_id == self.radio_button_2_id:
-            self.set_option_2()
-        elif control_id == self.ok_button_id:
-            self.ok()
-        elif control_id == self.url_button_id:
-            self.set_url()
-        elif control_id == self.path_button_id:
-            self.set_path()
+        if control_id == self._close_button_id:
+            # Close Button
+            self._cancelled()
+        elif control_id == self._radio_button_1_id:
+            # Radio Button 1
+            self._set_type(self.TYPE_URL)
+        elif control_id == self._radio_button_2_id:
+            # Radio Button 2
+            self._set_type(self.TYPE_PATH)
+        elif control_id == self._ok_button_id:
+            # OK button
+            self._ok()
+        elif control_id == self._input_button_id:
+            # Input button
+            if self._type == self.TYPE_URL:
+                self._set_url()
+            elif self._type == self.TYPE_PATH:
+                self._set_path()
 
     def onAction(self, action):
-        if action.getId() in [ACTION_PARENT_DIR, KEY_NAV_BACK, ACTION_PREVIOUS_MENU]:
-            self.cancelled()
+        if action.getId() in (ACTION_PARENT_DIR, ACTION_NAV_BACK, ACTION_PREVIOUS_MENU):
+            self._cancelled()
 
-    def set_option_1(self):
-        self.getControl(self.url_button_id).setLabel("\r")
-        self.getControl(self.radio_button_1_id).setSelected(True)
-        self.getControl(self.radio_button_2_id).setSelected(False)
-        self.type = 1
+    def _set_type(self, t):
+        self.getControl(self._radio_button_1_id).setSelected(t == self.TYPE_URL)  # Radio Button 1
+        self.getControl(self._radio_button_2_id).setSelected(t == self.TYPE_PATH)  # Radio Button 2
+        self.getControl(self._label_id).setLabel(translate(30035 if t == self.TYPE_URL else 30036))  # Box label
+        self._type = t
+        label = self._ret_val[t]
+        self.getControl(self._input_button_id).setLabel(label if label else " ")
 
-    def get_url(self):
-        url = self.getControl(self.url_button_id).getLabel()
-        if url.startswith("\r"):
-            url = url[1:]
-        return url
-
-    def set_option_2(self):
-        self.getControl(self.radio_button_1_id).setSelected(False)
-        self.getControl(self.radio_button_2_id).setSelected(True)
-        self.type = 2
-
-    def set_url(self):
-        default = self.getControl(self.url_button_id).getLabel()
-        url = xbmcgui.Dialog().input(utils.ADDON_NAME, default)
+    def _set_url(self):
+        url = Dialog().input(ADDON_NAME)
         if url != "":
-            self.getControl(self.url_button_id).setLabel(url)
+            self.getControl(self._input_button_id).setLabel(url)
+            self._ret_val[self.TYPE_URL] = url
 
-    def set_path(self):
-        fn = xbmcgui.Dialog().browse(1, utils.translate(30000), "files", ".pdf", False, False,
-                                     os.path.expanduser("~")).decode('utf-8')
+    def _set_path(self):
+        fn = str_to_unicode(Dialog().browse(1, ADDON_NAME, "files", ".pdf"))
         if fn != "":
-            self.getControl(self.path_button_id).setLabel(fn)
+            self.getControl(self._input_button_id).setLabel(fn)
+            self._ret_val[self.TYPE_PATH] = fn
 
-    def get_path(self):
-        return self.getControl(self.path_button_id).getLabel()
-
-    def cancelled(self):
-        self.type = 0
+    def _cancelled(self):
+        self._type = self.TYPE_UNKNOWN
         self.close()
 
-    def ok(self):
-        if self.type == 1:
-            self.ret_val = self.get_url()
-        elif self.type == 2:
-            self.ret_val = self.get_path()
+    def _ok(self):
         self.close()
+
+    @property
+    def ret_val(self):
+        return self._ret_val.get(self._type)
+
+    @property
+    def type(self):
+        return self._type

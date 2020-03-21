@@ -1,31 +1,46 @@
-# -*- coding: UTF-8 -*-
-
 import os
+import sys
+
 import xbmc
 import xbmcaddon
 
+PY3 = sys.version_info.major >= 3
 ADDON_ID = "plugin.image.pdfreader"
 ADDON = xbmcaddon.Addon(ADDON_ID)
-ADDON_PATH = xbmc.translatePath(ADDON.getAddonInfo("path")).decode('utf-8')
 ADDON_NAME = ADDON.getAddonInfo("name")
-DATA_PATH = xbmc.translatePath(ADDON.getAddonInfo("profile")).decode("utf-8")
+
+get_setting = ADDON.getSetting
+set_setting = ADDON.setSetting
+open_settings = ADDON.openSettings
+
+if PY3:
+    translate = ADDON.getLocalizedString
+
+    def str_to_bytes(s):
+        return s.encode()
+
+    def bytes_to_str(b):
+        return b.decode()
+
+    def str_to_unicode(s):
+        return s
+else:
+    def translate(*args, **kwargs):
+        return ADDON.getLocalizedString(*args, **kwargs).encode("utf-8")
+
+    def str_to_bytes(s):
+        return s
+
+    def bytes_to_str(b):
+        return b
+
+    def str_to_unicode(s):
+        return s.decode("utf-8")
+
+
+ADDON_PATH = str_to_unicode(xbmc.translatePath(ADDON.getAddonInfo("path")))
+DATA_PATH = str_to_unicode(xbmc.translatePath(ADDON.getAddonInfo("profile")))
 IMG_FOLDER = os.path.join(ADDON_PATH, "resources", "img")
-
-
-def translate(text):
-    return ADDON.getLocalizedString(text).encode("utf-8")
-
-
-def get_setting(setting):
-    return ADDON.getSetting(setting)
-
-
-def set_setting(setting, value):
-    ADDON.setSetting(setting, value=value)
-
-
-def open_settings():
-    ADDON.openSettings()
 
 
 def get_local_folder():

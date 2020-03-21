@@ -1,17 +1,21 @@
-# -*- coding: UTF-8 -*-
-
+import base64
+import json
 import os
 import re
-import sys
-import json
-import time
-import xbmc
-import zlib
-import base64
 import shutil
-import urllib
-import xbmcgui
+import sys
+import time
+import zlib
+
+try:
+    from urllib import quote_plus, urlretrieve
+except ImportError:
+    from urllib.parse import quote_plus
+    from urllib.request import urlretrieve
+
+import xbmc
 import xbmcaddon
+import xbmcgui
 
 try:
     from lib import utils
@@ -22,8 +26,8 @@ except ImportError:
 
 # File signatures
 FILE_SIGNATURES = [
-    {"type": "jpg", "start_mark": "\xff\xd8", "end_mark": "\xff\xd9", "end_fix": 2},
-    {"type": "png", "start_mark": "\x89\x50\x4E\x47", "end_mark": "\xAE\x42\x60\x82", "end_fix": 4},
+    {"type": "jpg", "start_mark": b"\xff\xd8", "end_mark": b"\xff\xd9", "end_fix": 2},
+    {"type": "png", "start_mark": b"\x89\x50\x4E\x47", "end_mark": b"\xAE\x42\x60\x82", "end_fix": 4},
 ]
 
 
@@ -49,10 +53,10 @@ class PDFReader:
         pdf_content = self.read_contents()
 
         for t in FILE_SIGNATURES:
-            if re.search(t["start_mark"], pdf_content) and re.search(t["end_mark"], pdf_content):
+            if t["start_mark"] in pdf_content and t["end_mark"] in pdf_content:
                 return t
 
-        return {}
+        return None
 
     def name(self):
         if self.file_path == "":
@@ -96,7 +100,7 @@ class PDFReader:
             save_path = self.temp_images()
 
         pdf_info = self.info()
-        if pdf_info == {}:
+        if pdf_info is None:
             return []
 
         pdf_type = pdf_info["type"]
@@ -118,14 +122,14 @@ class PDFReader:
         i_offset = 20
         images_path = []
         while True:
-            i_stream = pdf.find("stream", i)
+            i_stream = pdf.find(b"stream", i)
             if i_stream < 0:
                 break
             i_start = pdf.find(start_mark, i_stream, i_stream + i_offset)
             if i_start < 0:
                 i = i_stream + i_offset
                 continue
-            i_end_stream = pdf.find("endstream", i_start)
+            i_end_stream = pdf.find(b"endstream", i_start)
             if i_end_stream < 0:
                 raise Exception("Unable to find end of stream")
             i_end = pdf.find(end_mark, i_end_stream - i_offset)
@@ -160,7 +164,7 @@ class PDFReader:
 
     def download(self, url, name="", ext=".pdf"):
         xbmc.executebuiltin("Dialog.Close(busydialog)")
-        url_quoted = urllib.quote_plus(url)
+        url_quoted = quote_plus(url)
 
         if utils.save_pdf():
             local_folder = utils.get_local_folder()
@@ -216,7 +220,7 @@ class PDFReader:
 
         try:
             st = time.time()
-            urllib.urlretrieve(url, path, lambda nb, bs, fs: self._dialog_download(nb, bs, fs, dp, st))
+            urlretrieve(url, path, lambda nb, bs, fs: self._dialog_download(nb, bs, fs, dp, st))
         except self.StopDownloading:
             if os.path.exists(path):
                 os.remove(path)
@@ -327,14 +331,14 @@ def play_pdf(path, compress=True, is_image_plugin=False):
     })
 
     if compress:
-        compressed_data = base64.b64encode(zlib.compress(data, 9))
-        uri = "plugin://%s/play_images_z/%s" % (utils.ADDON_ID, urllib.quote_plus(compressed_data, ""))
+        compressed_data = utils.bytes_to_str(base64.b64encode(zlib.compress(utils.str_to_bytes(data), 9)))
+        uri = "plugin://%s/play_images_z/%s" % (utils.ADDON_ID, quote_plus(compressed_data, ""))
     else:
-        uri = "plugin://%s/play_images/%s" % (utils.ADDON_ID, urllib.quote_plus(data, ""))
+        uri = "plugin://%s/play_images/%s" % (utils.ADDON_ID, quote_plus(data, ""))
 
     if is_image_plugin:
         xbmc.executebuiltin("Container.Update(%s)" % uri)
     else:
-        xbmc.executebuiltin("ActivateWindow(Pictures, %s, return)" % uri)
+        xbmc.executebuiltin("ActivateWindow(Pictures, %s)" % uri)
 
     return True

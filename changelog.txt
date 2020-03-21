@@ -1,4 +1,7 @@
-﻿2.0.0:
+﻿2.0.1:
+Added support python 3
+
+2.0.0:
 Add-on completely rewritten
 Multiple improvements and fixes
 
