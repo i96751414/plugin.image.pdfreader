@@ -23,5 +23,6 @@
             <screenshot>resources/img/screenshot-3.png</screenshot>
             <screenshot>resources/img/screenshot-4.png</screenshot>
         </assets>
+        <reuselanguageinvoker>true</reuselanguageinvoker>
     </extension>
 </addon>
