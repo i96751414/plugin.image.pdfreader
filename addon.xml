@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.image.pdfreader" name="PDF Reader" version="2.0.1" provider-name="i96751414">
     <requires>
-        <import addon="script.module.pil"/>
         <import addon="xbmc.python" version="2.24.0"/>
+        <import addon="script.module.pil"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>image</provides>
     </extension>
-    <extension library="lib/pdflib" point="xbmc.python.module"/>
+    <extension library="lib/api" point="xbmc.python.module"/>
     <extension point="xbmc.addon.metadata">
         <language>en</language>
         <platform>all</platform>

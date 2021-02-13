@@ -9,6 +9,6 @@
     </category>
     <category label="30029">
         <setting id="thumbs" type="bool" label="30025" default="false"/>
-        <setting id="thumbs2" type="enum" lvalues="30026|30027" default="0" enable="!eq(-1,false)"/>
+        <setting id="thumbs2" type="enum" label="30039" lvalues="30026|30027" default="0" enable="!eq(-1,false)"/>
     </category>
 </settings>

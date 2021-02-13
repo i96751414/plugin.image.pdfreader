@@ -14,9 +14,9 @@ import xbmcgui
 import xbmcplugin
 
 from lib import thumbnails
-from lib import utils
-from lib.dialog_insert import DialogInsert
-from lib.pdflib import pdf
+from lib.api.pdf import utils
+from lib.dialog_insert import dialog_insert
+from lib.api import pdf
 
 
 def add_page(name, path, thumbnail):
@@ -59,10 +59,9 @@ def default():
 
 
 def open_pdf():
-    w = DialogInsert("plugin.image.pdfreader-dialog-insert.xml", utils.ADDON_PATH)
-    w.doModal()
-    if w.type != DialogInsert.TYPE_UNKNOWN and w.ret_val:
-        pdf.play_pdf(w.ret_val, is_image_plugin=True)
+    path = dialog_insert().ret_val
+    if path:
+        pdf.play_pdf(path, is_image_plugin=True)
 
 
 def run():

@@ -17,12 +17,7 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 
-try:
-    from lib import utils
-except ImportError:
-    parent_dir = os.path.abspath(os.path.join(__file__, "../../../"))
-    sys.path.insert(0, parent_dir)
-    from lib import utils
+from . import utils
 
 # File signatures
 FILE_SIGNATURES = [
@@ -31,7 +26,60 @@ FILE_SIGNATURES = [
 ]
 
 
-class PDFReader:
+class StopDownloadError(Exception):
+    pass
+
+
+class DownloadProgress(object):
+    def __init__(self, dialog_progress, rate_window=2):
+        self._dialog = dialog_progress
+        self._rate_window = rate_window
+        self._last_time = time.time()
+        self._last_block = 0
+        self._percent = 0
+        self._percent_last_time = self._last_time
+
+    def _update_percent(self, increment=10, update_rate=0.5, current_time=None):
+        if current_time is None:
+            current_time = time.time()
+        if current_time - self._percent_last_time >= update_rate:
+            self._percent_last_time = current_time
+            self._percent += increment
+            if self._percent > 100:
+                self._percent = 0
+
+    def __call__(self, block_num, block_size, file_size):
+        current_time = time.time()
+        time_passed = current_time - self._last_time
+
+        total_downloaded = block_num * block_size
+        total_downloaded_mb = total_downloaded / (1024.0 * 1024.0)
+        bps = (block_num - self._last_block) * block_size / time_passed
+
+        if time_passed >= self._rate_window:
+            self._last_block = block_num
+            self._last_time = current_time
+
+        if file_size < 0:
+            percent = self._percent
+            self._update_percent(current_time=current_time)
+            status = "%.02f MB downloaded (%.0f kB/s)\n%s: --:--\n\n" % (
+                total_downloaded_mb, (bps / 1024.0), utils.translate(30020))
+        else:
+            percent = min(total_downloaded * 100 // file_size, 100)
+            remaining_size = file_size - total_downloaded
+            eta = remaining_size / bps if bps > 0 and remaining_size > 0 else 0
+            minutes, seconds = divmod(eta, 60)
+            status = "%.02f MB %s %.02f MB (%.0f kB/s)\n%s: %02d:%02d\n\n" % (
+                total_downloaded_mb, utils.translate(30021), file_size / (1024.0 * 1024.0), (bps / 1024.0),
+                utils.translate(30020), minutes, seconds)
+
+        if self._dialog.iscanceled():
+            raise StopDownloadError("Stopped Downloading")
+        self._dialog.update(percent, status)
+
+
+class PDFReader(object):
     def __init__(self):
         # Path of local pdf
         self.file_path = ""
@@ -214,59 +262,25 @@ class PDFReader:
                 xbmcgui.Dialog().ok(utils.translate(30015), utils.translate(30019))
                 return False
 
-        dp = xbmcgui.DialogProgress()
-        dp.create("Download")
-        dp.update(0)
+        dialog = xbmcgui.DialogProgress()
+        dialog.create("Download")
+        dialog.update(0)
 
         try:
-            st = time.time()
-            urlretrieve(url, path, lambda nb, bs, fs: self._dialog_download(nb, bs, fs, dp, st))
-        except self.StopDownloading:
+            urlretrieve(url, path, DownloadProgress(dialog))
+        except StopDownloadError:
             if os.path.exists(path):
                 os.remove(path)
-            dp.close()
             return False
+        finally:
+            dialog.close()
 
-        dp.close()
         return True
-
-    def _dialog_download(self, num_blocks, block_size, file_size, dialog_progress, start_time):
-        percent = min(num_blocks * block_size * 100 / file_size, 100)
-        currently_downloaded = float(num_blocks) * block_size / (1024 * 1024)
-        kbps_speed = num_blocks * block_size / (time.time() - start_time)
-        if file_size < 0:
-            mbs = "%.02f MB downloaded (%.0f kB/s)" % (currently_downloaded, (kbps_speed / 1024))
-            time_left = "%s: --:--" % (utils.translate(30020))
-        else:
-            if kbps_speed > 0:
-                eta = (file_size - num_blocks * block_size) / kbps_speed
-            else:
-                eta = 0
-            total = float(file_size) / (1024 * 1024)
-
-            mbs = "%.02f MB %s %.02f MB (%.0f kB/s)" % (
-                currently_downloaded, utils.translate(30021), total, (kbps_speed / 1024))
-
-            minutes, seconds = divmod(eta, 60)
-            time_left = "%s: %02d:%02d" % (utils.translate(30020), minutes, seconds)
-
-        dialog_progress.update(percent, mbs, time_left)
-
-        if dialog_progress.iscanceled():
-            dialog_progress.close()
-            raise self.StopDownloading("Stopped Downloading")
-
-    class StopDownloading(Exception):
-        def __init__(self, value):
-            self.value = value
-
-        def __str__(self):
-            return repr(self.value)
 
 
 class CBXReader(PDFReader):
     def __init__(self):
-        PDFReader.__init__(self)
+        super(CBXReader, self).__init__()
 
     def read(self, path):
         if path.lower().endswith(".cbr"):
@@ -286,8 +300,7 @@ class CBXReader(PDFReader):
         if self.file_path:
             xbmc.executebuiltin("Extract(%s, %s)" % (self.file_path, self.temp_images()))
             return True
-        else:
-            return False
+        return False
 
     def convert_to_images(self, save_path=None):
         images_path = []
@@ -325,10 +338,7 @@ def play_pdf(path, compress=True, is_image_plugin=False):
         error_message()
         return False
 
-    data = json.dumps({
-        "images": images,
-        "id": xbmcaddon.Addon().getAddonInfo("id"),
-    })
+    data = json.dumps({"images": images, "id": xbmcaddon.Addon().getAddonInfo("id")})
 
     if compress:
         compressed_data = utils.bytes_to_str(base64.b64encode(zlib.compress(utils.str_to_bytes(data), 9)))

@@ -1,6 +1,12 @@
 from xbmcgui import Dialog, WindowXMLDialog, ACTION_PARENT_DIR, ACTION_NAV_BACK, ACTION_PREVIOUS_MENU
 
-from lib.utils import str_to_unicode, ADDON_NAME, translate
+from lib.api.pdf.utils import str_to_unicode, ADDON_NAME, ADDON_PATH, translate
+
+
+def dialog_insert():
+    w = DialogInsert("plugin.image.pdfreader-dialog-insert.xml", ADDON_PATH)
+    w.doModal()
+    return w
 
 
 # noinspection PyUnresolvedReferences
