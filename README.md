@@ -1,6 +1,7 @@
 # PDF Reader
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ed2697c44e8745d88e19d8f076116171)](https://www.codacy.com/app/i96751414/plugin.image.pdfreader?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=i96751414/plugin.image.pdfreader&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://github.com/i96751414/plugin.image.pdfreader/workflows/build/badge.svg)](https://github.com/i96751414/plugin.image.pdfreader/actions?query=workflow%3Abuild)
 
 Read your pdf's (ebooks) through Kodi
 
