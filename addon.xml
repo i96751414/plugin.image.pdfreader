@@ -13,7 +13,6 @@
         <platform>all</platform>
         <summary lang="en">PDF Reader</summary>
         <description lang="en">Read your pdf's through Kodi.</description>
-        <platform>all</platform>
         <license>GPL 2.0</license>
         <assets>
             <icon>icon.png</icon>

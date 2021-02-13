@@ -16,9 +16,16 @@ Limitations
 - Currently PDF Reader can only read pdf files made of pictures, since its operation method's consists of extracting pictures from PDF files.
 - Only JPG and PNG types are supported at the moment. If you want to add a new image type, just say.
 
-Download
---------
-See the [Releases](https://github.com/i96751414/plugin.image.pdfreader/releases) page.
+Installation
+------------
+
+The recommended way of installing this addon is through
+its [repository](https://github.com/i96751414/repository.github#installation). This way, any updates will be
+automatically installed.
+
+Although **not recommended**, one can install the addon without installing its repository. To do so, get
+the [latest release](https://github.com/i96751414/plugin.image.pdfreader/releases/latest) from github. Please note
+that, if there are any additional dependencies, they won't be resolved unless the repository is installed.
 
 <a name="api"></a> API
 ----------------------
