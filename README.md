@@ -1,7 +1,7 @@
 # PDF Reader
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ed2697c44e8745d88e19d8f076116171)](https://www.codacy.com/app/i96751414/plugin.image.pdfreader?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=i96751414/plugin.image.pdfreader&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://github.com/i96751414/plugin.image.pdfreader/workflows/build/badge.svg)](https://github.com/i96751414/plugin.image.pdfreader/actions?query=workflow%3Abuild)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d5b5db57e38e495aade6c3747422047c)](https://www.codacy.com/gh/i96751414/plugin.image.pdfreader/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=i96751414/plugin.image.pdfreader&amp;utm_campaign=Badge_Grade)
 
 Read your pdf's (ebooks) through Kodi
 
@@ -11,13 +11,12 @@ PDF Reader is an add-on (image plugin) for Kodi capable of reading PDFs composed
 
 More info can be found in Kodi's [forum](https://forum.kodi.tv/showthread.php?tid=187421).
 
-Limitations
------------
-- Currently PDF Reader can only read pdf files made of pictures, since its operation method's consists of extracting pictures from PDF files.
-- Only JPG and PNG types are supported at the moment. If you want to add a new image type, just say.
+## Limitations
 
-Installation
-------------
+-   Currently PDF Reader can only read pdf files made of pictures, since its operation method's consists of extracting pictures from PDF files.
+-   Only JPG and PNG types are supported at the moment. If you want to add a new image type, just say.
+
+## Installation
 
 The recommended way of installing this addon is through
 its [repository](https://github.com/i96751414/repository.github#installation). This way, any updates will be
@@ -27,8 +26,8 @@ Although **not recommended**, one can install the addon without installing its r
 the [latest release](https://github.com/i96751414/plugin.image.pdfreader/releases/latest) from github. Please note
 that, if there are any additional dependencies, they won't be resolved unless the repository is installed.
 
-<a name="api"></a> API
-----------------------
+## <a name="api"></a> API
+
 PDF reader can be called from other add-ons regardless their type. To do so, the `addon.xml` must contain the following line:
 ```xml
 <requires>
@@ -62,8 +61,7 @@ CBXReader()
 play_pdf(path, compress=True, is_image_plugin=False)
 ```
 
-Screenshots
------------
+## Screenshots
 
 ![screen1](https://github.com/i96751414/plugin.image.pdfreader/raw/master/resources/img/screenshot-1.png)
 
