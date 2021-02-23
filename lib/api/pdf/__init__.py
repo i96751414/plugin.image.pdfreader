@@ -51,6 +51,8 @@ class DownloadProgress(object):
     def __call__(self, block_num, block_size, file_size):
         current_time = time.time()
         time_passed = current_time - self._last_time
+        if time_passed == 0:
+            return
 
         total_downloaded = block_num * block_size
         total_downloaded_mb = total_downloaded / (1024.0 * 1024.0)
@@ -60,7 +62,7 @@ class DownloadProgress(object):
             self._last_block = block_num
             self._last_time = current_time
 
-        if file_size < 0:
+        if file_size <= 0:
             percent = self._percent
             self._update_percent(current_time=current_time)
             status = "%.02f MB downloaded (%.0f kB/s)\n%s: --:--\n\n" % (
@@ -80,16 +82,14 @@ class DownloadProgress(object):
 
 
 class PDFReader(object):
+    min_size = 10000
+
     def __init__(self):
         # Path of local pdf
-        self.file_path = ""
-
+        self._file_path = ""
         # Temp path
-        self.temp_path = os.path.join(utils.DATA_PATH, "temp")
-        self.temp_images_path = os.path.join(self.temp_path, "images")
-
-        # Minimum size for each picture
-        self.min_size = 10000
+        self._temp_path = os.path.join(utils.DATA_PATH, "temp")
+        self._temp_images_path = os.path.join(self._temp_path, "images")
 
     def __enter__(self):
         return self
@@ -107,41 +107,41 @@ class PDFReader(object):
         return None
 
     def name(self):
-        if self.file_path == "":
+        if not self._file_path:
             return ""
 
-        return os.path.splitext(self.file_path)[0].replace("\\", "/").split("/")[-1]
+        return os.path.splitext(os.path.basename(self._file_path))[0]
 
     def read_contents(self):
-        if self.file_path == "" or not os.path.isfile(self.file_path):
+        if not self._file_path or not os.path.isfile(self._file_path):
             return ""
 
-        with open(self.file_path, "rb") as fh:
+        with open(self._file_path, "rb") as fh:
             return fh.read()
 
     def temp(self):
-        if not os.path.exists(self.temp_path):
-            os.makedirs(self.temp_path)
-        return self.temp_path
+        if not os.path.exists(self._temp_path):
+            os.makedirs(self._temp_path)
+        return self._temp_path
 
     def temp_images(self):
-        if not os.path.exists(self.temp_images_path):
-            os.makedirs(self.temp_images_path)
-        return self.temp_images_path
+        if not os.path.exists(self._temp_images_path):
+            os.makedirs(self._temp_images_path)
+        return self._temp_images_path
 
     def clean_temp(self):
-        if os.path.exists(self.temp_path):
-            shutil.rmtree(self.temp_path, True)
+        if os.path.exists(self._temp_path):
+            shutil.rmtree(self._temp_path, True)
 
     def read(self, path):
         if os.path.isfile(path):
-            self.file_path = path
+            self._file_path = path
         elif path.startswith("http"):
-            self.file_path = self.download(path)
+            self._file_path = self.download(path)
         else:
-            self.file_path = ""
+            self._file_path = ""
 
-        return self.file_path != ""
+        return bool(self._file_path)
 
     def convert_to_images(self, save_path=None):
         if save_path is None:
@@ -203,10 +203,6 @@ class PDFReader(object):
                 images_path.append(image_path)
                 dim += 1
             i = i_end
-
-        with open(os.path.join(self.temp(), "names.txt"), "w") as fh:
-            for image_path in images_path:
-                fh.write("%s\n" % image_path)
 
         return images_path
 
@@ -291,14 +287,14 @@ class CBXReader(PDFReader):
             return False
 
         if os.path.isfile(path) and path.endswith(ext):
-            self.file_path = path
+            self._file_path = path
         elif path.startswith("http"):
-            self.file_path = self.download(path, ext=ext)
+            self._file_path = self.download(path, ext=ext)
         else:
-            self.file_path = ""
+            self._file_path = ""
 
-        if self.file_path:
-            xbmc.executebuiltin("Extract(%s, %s)" % (self.file_path, self.temp_images()))
+        if self._file_path:
+            xbmc.executebuiltin("Extract(%s, %s)" % (self._file_path, self.temp_images()))
             return True
         return False
 

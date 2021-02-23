@@ -44,8 +44,7 @@ def add_dir(label, url, thumbnail=None, folder=False, total=1):
     list_item = xbmcgui.ListItem(label)
     list_item.setArt({"thumb": thumbnail, "icon": "DefaultFolder.png"})
     list_item.setProperty('fanart_image', os.path.join(utils.IMG_FOLDER, "black-background.jpg"))
-    return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=list_item, isFolder=folder,
-                                       totalItems=total)
+    return xbmcplugin.addDirectoryItem(int(sys.argv[1]), url, list_item, isFolder=folder, totalItems=total)
 
 
 def default():
@@ -82,4 +81,4 @@ def run():
     else:
         default()
 
-    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), cacheToDisc=True)
+    xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
