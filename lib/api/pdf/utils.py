@@ -1,7 +1,7 @@
 import os
 import sys
 
-import xbmc
+import xbmc, xbmcvfs
 import xbmcaddon
 
 PY3 = sys.version_info.major >= 3
@@ -38,8 +38,8 @@ else:
         return s.decode("utf-8")
 
 
-ADDON_PATH = str_to_unicode(xbmc.translatePath(ADDON.getAddonInfo("path")))
-DATA_PATH = str_to_unicode(xbmc.translatePath(ADDON.getAddonInfo("profile")))
+ADDON_PATH = str_to_unicode(xbmcvfs.translatePath(ADDON.getAddonInfo("path")))
+DATA_PATH = str_to_unicode(xbmcvfs.translatePath(ADDON.getAddonInfo("profile")))
 IMG_FOLDER = os.path.join(ADDON_PATH, "resources", "img")
 
 
