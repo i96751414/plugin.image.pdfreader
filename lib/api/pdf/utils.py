@@ -1,7 +1,6 @@
 import os
 import sys
 
-import xbmcvfs
 import xbmcaddon
 
 PY3 = sys.version_info.major >= 3
@@ -14,6 +13,8 @@ set_setting = ADDON.setSetting
 open_settings = ADDON.openSettings
 
 if PY3:
+    from xbmcvfs import translatePath
+
     translate = ADDON.getLocalizedString
 
     def str_to_bytes(s):
@@ -25,6 +26,8 @@ if PY3:
     def str_to_unicode(s):
         return s
 else:
+    from xbmc import translatePath
+
     def translate(*args, **kwargs):
         return ADDON.getLocalizedString(*args, **kwargs).encode("utf-8")
 
@@ -38,8 +41,8 @@ else:
         return s.decode("utf-8")
 
 
-ADDON_PATH = str_to_unicode(xbmcvfs.translatePath(ADDON.getAddonInfo("path")))
-DATA_PATH = str_to_unicode(xbmcvfs.translatePath(ADDON.getAddonInfo("profile")))
+ADDON_PATH = str_to_unicode(translatePath(ADDON.getAddonInfo("path")))
+DATA_PATH = str_to_unicode(translatePath(ADDON.getAddonInfo("profile")))
 IMG_FOLDER = os.path.join(ADDON_PATH, "resources", "img")
 
 
