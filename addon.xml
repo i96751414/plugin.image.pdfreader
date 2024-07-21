@@ -14,6 +14,9 @@
         <summary lang="en">PDF Reader</summary>
         <description lang="en">Read your pdf's through Kodi.</description>
         <license>GPL 2.0</license>
+        <news>
+- Add support for xbmcvfs translations (python 3)
+        </news>
         <assets>
             <icon>icon.png</icon>
             <fanart>fanart.jpg</fanart>
